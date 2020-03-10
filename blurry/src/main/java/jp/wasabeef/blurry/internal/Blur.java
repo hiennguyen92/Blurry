@@ -65,33 +65,37 @@ public class Blur {
       return null;
     }
 
-    Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+    try{
+      Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
 
-    Canvas canvas = new Canvas(bitmap);
-    canvas.scale(1 / (float) factor.sampling, 1 / (float) factor.sampling);
-    Paint paint = new Paint();
-    paint.setFlags(Paint.FILTER_BITMAP_FLAG | Paint.ANTI_ALIAS_FLAG);
-    PorterDuffColorFilter filter =
-        new PorterDuffColorFilter(factor.color, PorterDuff.Mode.SRC_ATOP);
-    paint.setColorFilter(filter);
-    canvas.drawBitmap(source, 0, 0, paint);
+      Canvas canvas = new Canvas(bitmap);
+      canvas.scale(1 / (float) factor.sampling, 1 / (float) factor.sampling);
+      Paint paint = new Paint();
+      paint.setFlags(Paint.FILTER_BITMAP_FLAG | Paint.ANTI_ALIAS_FLAG);
+      PorterDuffColorFilter filter =
+          new PorterDuffColorFilter(factor.color, PorterDuff.Mode.SRC_ATOP);
+      paint.setColorFilter(filter);
+      canvas.drawBitmap(source, 0, 0, paint);
 
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
-      try {
-        bitmap = Blur.rs(context, bitmap, factor.radius);
-      } catch (RSRuntimeException e) {
+      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+        try {
+          bitmap = Blur.rs(context, bitmap, factor.radius);
+        } catch (RSRuntimeException e) {
+          bitmap = Blur.stack(bitmap, factor.radius, true);
+        }
+      } else {
         bitmap = Blur.stack(bitmap, factor.radius, true);
       }
-    } else {
-      bitmap = Blur.stack(bitmap, factor.radius, true);
-    }
 
-    if (factor.sampling == BlurFactor.DEFAULT_SAMPLING) {
-      return bitmap;
-    } else {
-      Bitmap scaled = Bitmap.createScaledBitmap(bitmap, factor.width, factor.height, true);
-      bitmap.recycle();
-      return scaled;
+      if (factor.sampling == BlurFactor.DEFAULT_SAMPLING) {
+        return bitmap;
+      } else {
+        Bitmap scaled = Bitmap.createScaledBitmap(bitmap, factor.width, factor.height, true);
+        bitmap.recycle();
+        return scaled;
+      }
+    }catch (Exception ex){
+      return null;
     }
   }
 
