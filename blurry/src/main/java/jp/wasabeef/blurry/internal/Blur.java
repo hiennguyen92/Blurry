@@ -34,13 +34,24 @@ import android.view.View;
 public class Blur {
 
   public static Bitmap of(View view, BlurFactor factor) {
-    view.setDrawingCacheEnabled(true);
-    view.destroyDrawingCache();
-    view.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_LOW);
-    Bitmap cache = view.getDrawingCache();
-    Bitmap bitmap = of(view.getContext(), cache, factor);
-    cache.recycle();
-    return bitmap;
+    try{
+      view.setDrawingCacheEnabled(true);
+      view.destroyDrawingCache();
+      view.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_LOW);
+      Bitmap cache = view.getDrawingCache();
+      Bitmap bitmap = of(view.getContext(), cache, factor);
+      cache.recycle();
+      return bitmap;
+    }catch (NullPointerException ex){
+      view.setDrawingCacheEnabled(true);
+      view.destroyDrawingCache();
+      view.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_LOW);
+      Bitmap cache = view.getDrawingCache();
+      Bitmap bitmap = of(view.getContext(), cache, factor);
+      return bitmap;
+    } finally {
+      return null;
+    }
   }
 
   public static Bitmap of(Context context, Bitmap source, BlurFactor factor) {
