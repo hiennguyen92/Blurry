@@ -50,6 +50,9 @@ public class Blur {
     if (Helper.hasZero(width, height)) {
       return null;
     }
+    if (source == null) {
+      return null;
+    }
 
     Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
 
