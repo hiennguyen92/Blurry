@@ -61,7 +61,7 @@ public class Blur {
     if (Helper.hasZero(width, height)) {
       return null;
     }
-    if (source == null) {
+    if (source == null || source.isRecycled()) {
       return null;
     }
 
